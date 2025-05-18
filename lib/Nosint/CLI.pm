@@ -6,6 +6,8 @@ use Getopt::Long;
 use Nosint::API;
 use Nosint::Formatter;
 
+our $VERSION = '0.01';
+
 sub new {
     my ($class) = @_;
     my $self = {};
@@ -91,7 +93,7 @@ sub print_help {
     my ($self) = @_;
 
     print <<EOF;
-Usage: nosint.pl --target EMAIL --plugin-type TYPE [options]
+Usage: nosint --target EMAIL --plugin-type TYPE [options]
 
 Required arguments:
   --target, -t EMAIL          Target email address to search
@@ -113,10 +115,10 @@ Example:
   export NOSINT_COOKIE='next-auth.csrf-token=value; next-auth.callback-url=value; next-auth.session-token=value'
 
   Run the search
-  nosint.pl --target user\@example.com --plugin-type email
+  nosint --target user\@example.com --plugin-type email
 
   Alternative: Provide cookie directly
-  nosint.pl --target user\@example.com --plugin-type email --cookie 'next-auth.csrf-token=value; next-auth.callback-url=value; next-auth.session-token=value'
+  nosint --target user\@example.com --plugin-type email --cookie 'next-auth.csrf-token=value; next-auth.callback-url=value; next-auth.session-token=value'
 EOF
 }
 

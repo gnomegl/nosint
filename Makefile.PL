@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME               => 'Nosint',
-    AUTHOR             => q{Your Name <your.email@example.com>},
+    AUTHOR             => q{gnomegl <gnome@groomla.ke>},
     VERSION_FROM       => 'lib/Nosint/CLI.pm',
     ABSTRACT_FROM      => 'lib/Nosint/CLI.pm',
     LICENSE            => 'artistic_2',
@@ -31,11 +31,11 @@ WriteMakefile(
         resources   => {
             repository => {
                 type => 'git',
-                url  => 'https://github.com/yourusername/nosint.git',
-                web  => 'https://github.com/yourusername/nosint',
+                url  => 'https://github.com/gnomegl/nosint.git',
+                web  => 'https://github.com/gnomegl/nosint',
             },
             bugtracker => {
-                web => 'https://github.com/yourusername/nosint/issues',
+                web => 'https://github.com/gnomegl/nosint/issues',
             },
         },
     },

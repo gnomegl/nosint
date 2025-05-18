@@ -158,6 +158,7 @@ sub print_result {
             print "\n" unless $idx == $#$data;
         }
     }
+
     # standard fields
     else {
         if ($data->{meta} && $data->{meta}->{name}) {

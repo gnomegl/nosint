@@ -1,3 +1,4 @@
+# requires 'Nosint', '0.01';
 # Core dependencies
 requires 'perl', '5.010';  # Minimum Perl version requirement
 requires 'strict';

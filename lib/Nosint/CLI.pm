@@ -42,6 +42,7 @@ sub run {
         cookie => $options->{cookie},
         verbose => $options->{verbose},
         formatter => $formatter,
+        aggressive => $options->{aggressive},
     );
 
     if (!$api->validate_auth()) {
@@ -63,6 +64,7 @@ sub parse_options {
         help => 0,
         verbose => 0,
         show_not_found => 0,
+        aggressive => 0,
     );
 
     GetOptions(
@@ -73,6 +75,7 @@ sub parse_options {
         "cookie|c=s" => \$options{cookie},
         "verbose|v" => \$options{verbose},
         "show-not-found" => \$options{show_not_found},
+        "aggressive|a" => \$options{aggressive},
     );
 
     if ($options{help}) {
@@ -93,6 +96,7 @@ Required arguments:
   --plugin-type, -p TYPE      Plugin type (e.g., 'email')
 
 Options:
+  --aggressive, -a            Enable aggressive search, alerts user (default: off)
   --cookie, -c COOKIE         Authentication cookie for nosint.org
   --json, -j                  Output in JSONL format
   --help, -h                  Show this help message

@@ -14,6 +14,7 @@ sub new {
         cookie => $args{cookie},
         verbose => $args{verbose} || 0,
         formatter => $args{formatter},
+        aggressive => $args{aggressive} || 0,
         buffer => '',
         ua => LWP::UserAgent->new,
     };
@@ -29,6 +30,11 @@ sub search {
     my ($self, $target, $plugin_type) = @_;
 
     my $url = "https://nosint.org/api/stream-search?target=$target&plugin_type=$plugin_type";
+    
+    if ($self->{aggressive}) {
+        $url .= "&report=true";
+        $self->{formatter}->print_info("Aggressive search mode enabled - this will alert the target");
+    }
 
     my $req = HTTP::Request->new(GET => $url);
     $req->header('Accept' => 'text/event-stream');

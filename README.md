@@ -13,9 +13,9 @@ cpanm Nosint
 ### From source
 
 ```bash
-git clone https://github.com/yourusername/nosint.git
+git clone https://github.com/gnomegl/nosint.git
 cd nosint
-perl Makefile.pl
+perl Makefile.PL
 make
 make test
 make install

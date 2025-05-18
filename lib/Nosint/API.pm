@@ -30,7 +30,7 @@ sub search {
     my ($self, $target, $plugin_type) = @_;
 
     my $url = "https://nosint.org/api/stream-search?target=$target&plugin_type=$plugin_type";
-    
+
     if ($self->{aggressive}) {
         $url .= "&report=true";
         $self->{formatter}->print_info("Aggressive search mode enabled - this will alert the target");
@@ -46,25 +46,44 @@ sub search {
 
     $self->{formatter}->print_info("Starting search for $target with plugin type: $plugin_type");
 
-    my $response = $self->{ua}->request($req, sub {
-        my ($data, $response, $protocol) = @_;
+    my $response;
 
-        $self->{buffer} .= $data;
+    eval {
+        $response = $self->{ua}->request($req, sub {
+            my ($data, $response, $protocol) = @_;
 
-        while ($self->{buffer} =~ s/^data: (.+)(\r?\n)+//m) {
-            my $json_str = $1;
-            $self->process_data($json_str) if $json_str;
+            $self->{buffer} .= $data;
+
+            while ($self->{buffer} =~ s/^data: (.+?)(\r?\n){1,2}//s) {
+                my $json_str = $1;
+                $self->process_data($json_str) if $json_str;
+            }
+        });
+    };
+
+    if ($@ || !$response || !$response->is_success) {
+        my $error_msg = $@;
+        if ($response) {
+            $error_msg .= "\nError connecting to API: " . $response->status_line;
+            $error_msg .= "\nResponse body: " . $response->content if $response->content;
+        } else {
+            $error_msg = "Connection failed or timed out" if !$error_msg;
         }
-    });
 
-    if (!$response->is_success) {
         $self->{formatter}->print_error(
-            "Error connecting to API: " . $response->status_line . "\n" .
-            "Response body: " . $response->content . "\n\n" .
+            $error_msg . "\n\n" .
             "This could be due to cookie expiration or incorrect format.\n" .
             "Please check your cookie is correct and current."
         );
         return 0;
+    }
+
+    # process any remaining data in buffer after connection closes 
+    # (very important, i think they are streaming incorrectly on the server 
+    # side because it doesn't close the connection, we have to close it)
+    while ($self->{buffer} =~ s/^data: (.+?)(\r?\n){1,2}//s) {
+        my $json_str = $1;
+        $self->process_data($json_str) if $json_str;
     }
 
     return 1;
@@ -76,6 +95,8 @@ sub process_data {
     # skip empty lines
     return if $json_str =~ /^\s*$/;
 
+    $json_str =~ s/^\s+|\s+$//g;
+
     my $data;
     eval {
         $data = decode_json($json_str);
@@ -84,6 +105,11 @@ sub process_data {
     if ($@) {
         $self->{formatter}->print_error("Error parsing JSON: $@\nRaw data: $json_str");
         return;
+    }
+
+    if ($data->{status} && $data->{status} eq "stream_closed") {
+        $self->{formatter}->format_output($data, $json_str);
+        exit(0);
     }
 
     $self->{formatter}->format_output($data, $json_str);

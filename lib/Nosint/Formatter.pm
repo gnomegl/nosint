@@ -193,7 +193,7 @@ sub print_hash_content {
     return unless $hash;
 
     my $spaces = " " x $indent;
-    foreach my $key (sort keys %$hash) {
+    foreach my $key (ref $hash eq 'HASH' ? sort keys %$hash : ()) {
         my $value = $hash->{$key};
         if (!defined $value) {
             $value = "null";

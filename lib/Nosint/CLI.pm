@@ -20,38 +20,40 @@ sub run {
 
     return 0 if $options->{help};
 
-    if (!$options->{target} || !$options->{plugin_type}) {
+    if ( !$options->{target} || !$options->{plugin_type} ) {
         $self->print_help();
         return 1;
     }
 
     my $formatter = Nosint::Formatter->new(
-        json_output => $options->{json_output},
+        json_output    => $options->{json_output},
         show_not_found => $options->{show_not_found},
     );
 
     $options->{cookie} = $ENV{NOSINT_COOKIE} unless $options->{cookie};
 
-    if (!$options->{cookie}) {
-        $formatter->print_error("Cookie not provided via --cookie flag or NOSINT_COOKIE environment variable");
+    if ( !$options->{cookie} ) {
+        $formatter->print_error(
+"Cookie not provided via --cookie flag or NOSINT_COOKIE environment variable"
+        );
         print "Please provide your authentication cookie from nosint.org\n";
         return 1;
     }
 
     my $api = Nosint::API->new(
-        cookie => $options->{cookie},
-        verbose => $options->{verbose},
-        formatter => $formatter,
+        cookie     => $options->{cookie},
+        verbose    => $options->{verbose},
+        formatter  => $formatter,
         aggressive => $options->{aggressive},
     );
 
-    if (!$api->validate_auth()) {
+    if ( !$api->validate_auth() ) {
         $formatter->print_error("Invalid authentication cookie format");
         print "Please check your cookie format and try again\n";
         return 1;
     }
 
-    my $result = $api->search($options->{target}, $options->{plugin_type});
+    my $result = $api->search( $options->{target}, $options->{plugin_type} );
 
     return $result ? 0 : 1;
 }
@@ -60,25 +62,25 @@ sub parse_options {
     my ($self) = @_;
 
     my %options = (
-        json_output => 0,
-        help => 0,
-        verbose => 0,
+        json_output    => 0,
+        help           => 0,
+        verbose        => 0,
         show_not_found => 0,
-        aggressive => 0,
+        aggressive     => 0,
     );
 
     GetOptions(
-        "json|j" => \$options{json_output},
-        "help|h" => \$options{help},
-        "target|t=s" => \$options{target},
+        "json|j"          => \$options{json_output},
+        "help|h"          => \$options{help},
+        "target|t=s"      => \$options{target},
         "plugin-type|p=s" => \$options{plugin_type},
-        "cookie|c=s" => \$options{cookie},
-        "verbose|v" => \$options{verbose},
-        "show-not-found" => \$options{show_not_found},
-        "aggressive|a" => \$options{aggressive},
+        "cookie|c=s"      => \$options{cookie},
+        "verbose|v"       => \$options{verbose},
+        "show-not-found"  => \$options{show_not_found},
+        "aggressive|a"    => \$options{aggressive},
     );
 
-    if ($options{help}) {
+    if ( $options{help} ) {
         $self->print_help();
     }
 

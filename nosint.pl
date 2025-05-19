@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use FindBin;
+use lib "./lib";
+use Nosint::CLI;
 
-# Forward to the main script
-exec("$FindBin::Bin/bin/nosint", @ARGV) or die "Could not execute bin/nosint: $!"; 
+exit Nosint::CLI->new->run(); 

@@ -4,10 +4,10 @@ A command-line OSINT tool for gathering information from nosint.org.
 
 ## Installation
 
-### From CPAN (recommended)
+### With CPANM (recommended)
 
 ```bash
-cpanm Nosint
+cpanm https://github.com/gnomegl/nosint.git
 ```
 
 ### From source
